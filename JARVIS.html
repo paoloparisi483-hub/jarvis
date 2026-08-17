@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#05070d">
+<title>J.A.R.V.I.S.</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#05070d;color:#e9f7ff;font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+header{text-align:center;padding:28px 16px 16px;border-bottom:1px solid #173043;position:sticky;top:0;background:#05070df2}
+.logo{font-size:28px;letter-spacing:6px;font-weight:800;color:#5ee7ff;text-shadow:0 0 18px #39dfff55}
+.status{font-size:12px;color:#62f3a4;margin-top:6px;letter-spacing:2px}
+main{max-width:700px;margin:auto;padding:16px}.card{background:#0b111a;border:1px solid #1d3446;border-radius:18px;padding:16px;margin-bottom:14px}
+.title{font-size:12px;color:#7fa0b5;letter-spacing:2px;margin-bottom:12px}
+.server{padding:14px;border:1px solid #183041;border-radius:14px;margin:9px 0;display:flex;justify-content:space-between}
+.meta{font-size:12px;color:#7fa0b5;margin-top:5px}.online{color:#62f3a4;font-size:12px}
+input,button{width:100%;padding:15px;border-radius:13px;font-size:16px}
+input{border:1px solid #284354;background:#050b12;color:white}
+button{margin-top:9px;border:1px solid #246078;background:#0c2430;color:white;font-weight:700}
+.primary{background:#0b5669;border-color:#5ee7ff}
+#chat{min-height:70px}.msg{padding:10px 12px;border-radius:12px;margin:7px 0;background:#0a1721}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">J.A.R.V.I.S.</div>
+<div class="status">● SYSTEM ONLINE</div>
+</header>
+<main>
+<section class="card">
+<div class="title">SERVER DISPONIBILI</div>
+<div id="servers"></div>
+<button onclick="scan()">⟳ SCANSIONA SERVER</button>
+</section>
+<section class="card">
+<div class="title">NUOVO PROGETTO</div>
+<input id="project" placeholder="Nome progetto, es. ARES">
+<button class="primary" onclick="createProject()">CREA PROGETTO</button>
+</section>
+<section class="card">
+<div class="title">JARVIS</div>
+<div id="chat"><div class="msg">JARVIS: Sistemi online. Come posso assisterti?</div></div>
+<button onclick="speak()">🔊 PARLA CON JARVIS</button>
+</section>
+</main>
+<script>
+const servers=[
+{name:"WORKSTATION",cpu:"16 cores",ram:"64 GB",disk:"850 GB"},
+{name:"DEV-SERVER",cpu:"32 cores",ram:"128 GB",disk:"4.2 TB"}
+];
+let selected="WORKSTATION";
+function render(){
+document.getElementById("servers").innerHTML=servers.map((s,i)=>
+`<div class="server" onclick="selected='${s.name}';this.style.borderColor='#5ee7ff'">
+<div><b>🖥️ ${s.name}</b><div class="meta">${s.cpu} · ${s.ram} RAM · ${s.disk} liberi</div></div>
+<div class="online">● ONLINE</div></div>`).join("");
+}
+function scan(){render();add("JARVIS","Scansione completata. Ho rilevato "+servers.length+" ambienti.");}
+function add(who,text){document.getElementById("chat").innerHTML+=`<div class="msg">${who}: ${text}</div>`}
+function createProject(){
+let n=document.getElementById("project").value.trim();
+if(!n)return add("JARVIS","Inserisci il nome del progetto.");
+add("JARVIS",`Progetto ${n} selezionato su ${selected}.`);
+}
+function speak(){
+if(!("speechSynthesis" in window))return add("JARVIS","Sintesi vocale non disponibile.");
+let u=new SpeechSynthesisUtterance("Sistemi online. Come posso assisterti?");
+u.lang="it-IT";speechSynthesis.speak(u);
+}
+render();
+</script>
+</body>
+</html>
